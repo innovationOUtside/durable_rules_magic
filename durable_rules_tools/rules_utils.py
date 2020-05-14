@@ -41,8 +41,18 @@ def SPO(subj, pred, obj):
         obj = subj.m.object
     if not isinstance(pred, str):
         pred = subj.m.predicate
-
     return { 'subject': subj, 'predicate': pred, 'object': obj }
+
+def Set(c, statement):
+    _statement = [x.strip() for x in statement.split(':')]
+    subj = _statement[0] if  _statement[0]!='?' else c.m.subject
+    pred = _statement[1] if  _statement[1]!='?' else c.m.predicate
+    obj = _statement[2] if  _statement[2]!='?' else c.m.object
+    try:
+        c.assert_fact( SPO(subj, pred, obj ) )
+    except MessageObservedException:
+        warnings.warn(f"Assertion error: is {statement} already asserted?")
+    
 
 def quick_assert_fact(r, f):
     """
