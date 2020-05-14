@@ -14,15 +14,15 @@ def new_ruleset(name=None):
         return name
     return f'rs_{uuid.uuid4()}'
 
-def subject_(pred, obj):
+def Subject(pred, obj):
     """Clause where subject is assumed and predicate and object tested."""
     return (m.predicate == pred) & (m.object == obj)
 
-def predicate_(subj, obj):
+def Predicate(subj, obj):
     """Clause where predicate is assumed and subject and object tested."""
     return  (m.subject == subj) & (m.object == obj)
 
-def object_(subj, pred):
+def Object(subj, pred):
     """Clause where object is assumed and subject and predicate tested."""
     return  (m.subject == subj) & (m.predicate == pred)
 
@@ -33,7 +33,7 @@ def _delete_state(rs):
     except:
         pass
 
-def spo(subj, pred, obj):
+def SPO(subj, pred, obj):
     """Return subject-predicate-object dict."""
     if not isinstance(subj, str):
         subj = subj.m.subject
@@ -59,6 +59,6 @@ def quick_assert_fact(r, f):
     obj = _statement[2]
     #print('..', r, spo(subj, pred, obj ),'..' )
     try:
-        assert_fact(r, spo(subj, pred, obj ) )
+        assert_fact(r, SPO(subj, pred, obj ) )
     except MessageObservedException:
         warnings.warn(f"Assertion error: is {_statement} already asserted?")
