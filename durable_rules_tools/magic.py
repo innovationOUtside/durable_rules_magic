@@ -16,7 +16,7 @@ class DurableRulesMagic(Magics):
     @argument('--ruleset', '-r', default='', help='Ruleset name.')
     @argument('--no-reset', action='store_false', help='Disable automatic state deletion.')
     def assert_facts(self, line, cell):
-        "Assert and/or several facts."
+        "Assert and/or retract several facts."
         args = parse_argstring(self.assert_facts, line)
         if not args.ruleset and self.RULESET is None:
             warnings.warn("You must provide a ruleset reference (--ruleset/-r RULESET).")
@@ -36,6 +36,30 @@ class DurableRulesMagic(Magics):
             elif not _assertion.startswith('#'):
                 quick_assert_fact(_ruleset, _assertion)
 
+    @line_cell_magic
+    @magic_arguments()
+    @argument('--ruleset', '-r', default='', help='Ruleset name.')
+    @argument('--no-reset', action='store_false', help='Disable automatic state deletion.')
+    def retract_facts(self, line, cell):
+        "Retract and/or assert several facts."
+        args = parse_argstring(self.retract_facts, line)
+        if not args.ruleset and self.RULESET is None:
+            warnings.warn("You must provide a ruleset reference (--ruleset/-r RULESET).")
+            return
+        elif args.ruleset:
+            self.RULESET = self.shell.user_ns[args.ruleset]
+
+        _ruleset = self.RULESET
+        #print(_ruleset)
+
+        if args.no_reset:
+            _delete_state(_ruleset)
+
+        for _assertion in cell.split('\n'):
+            if _assertion.startswith('*'):
+                quick_assert_fact(_ruleset, _assertion.lstrip('-'))
+            elif not _assertion.startswith('#'):
+                quick_retract_fact(_ruleset, _assertion)
 
     @line_cell_magic
     @magic_arguments()
