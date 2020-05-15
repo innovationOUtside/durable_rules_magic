@@ -2,7 +2,7 @@ from IPython.core.magic import magics_class, line_cell_magic, Magics
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
 
 import uuid
-from durable.lang import assert_fact, delete_state, m, c
+from durable.lang import assert_fact, retract_fact, post, delete_state, m, c
 from durable.engine import MessageObservedException
 import warnings
 
@@ -72,3 +72,41 @@ def quick_assert_fact(r, f):
         assert_fact(r, SPO(subj, pred, obj ) )
     except MessageObservedException:
         warnings.warn(f"Assertion error: is {_statement} already asserted?")
+
+def quick_retract_fact(r, f):
+    """
+    Retract a fact from a colon separated triple string.
+    Triple strings of the form: "a subject: predicate : and object"
+    """
+    _statement = [t.strip() for t in f.split(':')]
+    
+    if len(_statement) != 3:
+        return
+
+    subj = _statement[0]
+    pred = _statement[1]
+    obj = _statement[2]
+    #print('..', r, spo(subj, pred, obj ),'..' )
+    try:
+        retract_fact(r, SPO(subj, pred, obj ) )
+    except MessageObservedException:
+        warnings.warn(f"Retraction error with {_statement}.")
+
+def quick_post_event(r, f):
+    """
+    Post an event from a colon separated triple string.
+    Triple strings of the form: "a subject: predicate : and object"
+    """
+    _statement = [t.strip() for t in f.split(':')]
+    
+    if len(_statement) != 3:
+        return
+
+    subj = _statement[0]
+    pred = _statement[1]
+    obj = _statement[2]
+    #print('..', r, spo(subj, pred, obj ),'..' )
+    try:
+        post(r, SPO(subj, pred, obj ) )
+    except MessageObservedException:
+        warnings.warn(f"Post event error with {_statement}.")
