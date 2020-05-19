@@ -61,17 +61,17 @@ def quick_assert_fact(r, f):
     """
     _statement = [t.strip() for t in f.split(':')]
     
-    if len(_statement) != 3:
-        return
-
-    subj = _statement[0]
-    pred = _statement[1]
-    obj = _statement[2]
-    #print('..', r, spo(subj, pred, obj ),'..' )
-    try:
-        assert_fact(r, SPO(subj, pred, obj ) )
-    except MessageObservedException:
-        warnings.warn(f"Assertion error: is {_statement} already asserted?")
+    if len(_statement) == 3:
+        subj = _statement[0]
+        pred = _statement[1]
+        obj = _statement[2]
+        #print('..', r, spo(subj, pred, obj ),'..' )
+        try:
+            assert_fact(r, SPO(subj, pred, obj ) )
+        except MessageObservedException:
+            warnings.warn(f"Assertion error: is {_statement} already asserted?")
+    elif len(_statement) == 2:
+        assert_fact(r, {_statement[0]: _statement[1]})
 
 def quick_retract_fact(r, f):
     """
@@ -80,17 +80,18 @@ def quick_retract_fact(r, f):
     """
     _statement = [t.strip() for t in f.split(':')]
     
-    if len(_statement) != 3:
-        return
+    if len(_statement) == 3:
+        subj = _statement[0]
+        pred = _statement[1]
+        obj = _statement[2]
+        #print('..', r, spo(subj, pred, obj ),'..' )
+        try:
+            retract_fact(r, SPO(subj, pred, obj ) )
+        except MessageObservedException:
+            warnings.warn(f"Retraction error with {_statement}.")
 
-    subj = _statement[0]
-    pred = _statement[1]
-    obj = _statement[2]
-    #print('..', r, spo(subj, pred, obj ),'..' )
-    try:
-        retract_fact(r, SPO(subj, pred, obj ) )
-    except MessageObservedException:
-        warnings.warn(f"Retraction error with {_statement}.")
+    elif len(_statement) == 2:
+        retract_fact(r, {_statement[0]: _statement[1]})
 
 def quick_post_event(r, f):
     """
@@ -99,14 +100,14 @@ def quick_post_event(r, f):
     """
     _statement = [t.strip() for t in f.split(':')]
     
-    if len(_statement) != 3:
-        return
-
-    subj = _statement[0]
-    pred = _statement[1]
-    obj = _statement[2]
-    #print('..', r, spo(subj, pred, obj ),'..' )
-    try:
-        post(r, SPO(subj, pred, obj ) )
-    except MessageObservedException:
-        warnings.warn(f"Post event error with {_statement}.")
+    if len(_statement) == 3:
+        subj = _statement[0]
+        pred = _statement[1]
+        obj = _statement[2]
+        #print('..', r, spo(subj, pred, obj ),'..' )
+        try:
+            post(r, SPO(subj, pred, obj ) )
+        except MessageObservedException:
+            warnings.warn(f"Post event error with {_statement}.")
+    elif len(_statement) == 2:
+        post(r, {_statement[0]: _statement[1]})

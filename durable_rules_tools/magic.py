@@ -4,6 +4,11 @@ import warnings
 
 from .rules_utils import quick_assert_fact, quick_retract_fact, quick_post_event, _delete_state
 
+
+# TO DO - things are passed in from the magic as strings
+# Should we try to cast them to eg int, float, list, tuple, dict?
+
+
 @magics_class
 class DurableRulesMagic(Magics):
     def __init__(self, shell, cache_display_data=False):
